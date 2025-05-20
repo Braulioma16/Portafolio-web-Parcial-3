@@ -1,0 +1,42 @@
+document.getElementById("quizForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  let totalScore = 0;
+  const scores = [];
+
+  for (let i = 1; i <= 5; i++) {
+    const value = parseInt(formData.get(`q${i}`) || 0);
+    scores.push(value);
+    totalScore += value;
+  }
+
+  document.getElementById("result").innerText = `Obtuviste ${totalScore} de 5 puntos.`;
+
+  const ctx = document.getElementById("chart").getContext("2d");
+
+  if (window.quizChart) window.quizChart.destroy();
+
+  window.quizChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Pregunta 1', 'Pregunta 2', 'Pregunta 3', 'Pregunta 4', 'Pregunta 5'],
+      datasets: [{
+        label: 'Puntaje por pregunta',
+        data: scores,
+        backgroundColor: scores.map(score => score ? 'rgba(75, 192, 192, 0.6)' : 'rgba(255, 99, 132, 0.6)'),
+        borderColor: '#333',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 1
+        }
+      }
+    }
+  });
+});
